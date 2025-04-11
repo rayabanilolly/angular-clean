@@ -2,11 +2,12 @@ import { HttpClient } from "@angular/common/http";
 import { Product } from "../../domain/entities/product.entities";
 import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
+import { GetProductOutput } from "../../application/outputs/product/get.output";
 
 @Injectable({
     providedIn: 'root'
 })
-export class ProductAPIService {
+export class ProductAPIService implements GetProductOutput {
     constructor(private readonly http: HttpClient) {}
 
     get(): Observable<Product[]> {

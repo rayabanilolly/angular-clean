@@ -1,14 +1,16 @@
-import { Observable } from "rxjs";
-import { ProductAPIService } from "../../../adapter/api/product.service";
-import { Product } from "../../../domain/entities/product.entities";
-import { GetProductOutput } from "../../outputs/product/get.output";
 import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { ProductAPIService } from "../../../adapter/api/product.api";
+import { Product } from "../../../domain/entities/product.entities";
 
 @Injectable({
     providedIn: 'root'
 })
-export class GetProductUseCase implements GetProductOutput{
-    constructor(private readonly productAPIService: ProductAPIService) {}
+export class GetProductUseCase {
+    constructor(
+        private readonly productAPIService: ProductAPIService,
+        // private readonly productMock: ProductMock
+    ) {}
 
     get(): Observable<Product[]> {
         return this.productAPIService.get();

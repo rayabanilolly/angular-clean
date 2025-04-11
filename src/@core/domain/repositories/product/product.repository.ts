@@ -1,4 +1,4 @@
-import { Product } from "../entities/product.entities";
+import { Product } from "../../entities/product.entities";
 
 export class ProductRepository {
     available(product: Product): boolean {

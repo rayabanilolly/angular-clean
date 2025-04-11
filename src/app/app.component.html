@@ -5,7 +5,15 @@
       <div class="product__price">{{ product.price }}</div>
 
       <div class="product__action">
-        <div class="product__action__buy">Buy</div>
+        <button 
+          class="product__action__buy" 
+          (click)="buy(product)"
+          [disabled]="!isAvailable(product)"
+          [ngClass]="{ 
+            'product__action__buy--disabled': !isAvailable(product) 
+          }">
+          Buy
+        </button>
       </div>
     </div>
   } @empty {
