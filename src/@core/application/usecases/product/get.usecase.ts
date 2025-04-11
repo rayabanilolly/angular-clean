@@ -12,7 +12,7 @@ export class GetProductUseCase {
         // private readonly productMock: ProductMock
     ) {}
 
-    get(): Observable<Product[]> {
+    execute(): Observable<Product[]> {
         return this.productAPIService.get();
     }
 }

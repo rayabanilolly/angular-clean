@@ -1,22 +1,26 @@
-<div class="products-wrapper">
-  @for(product of products; track product.id) {
-    <div class="product">
-      <div class="product__name">{{ product.name }}</div>
-      <div class="product__price">{{ product.price }}</div>
+<div class="section">
+  <div class="section__title">Daftar Produk</div>
 
-      <div class="product__action">
-        <button 
-          class="product__action__buy" 
-          (click)="buy(product)"
-          [disabled]="!isAvailable(product)"
-          [ngClass]="{ 
-            'product__action__buy--disabled': !isAvailable(product) 
-          }">
-          Buy
-        </button>
+  <div class="products-wrapper">
+    @for(product of products; track product.id) {
+      <div class="product">
+        <div class="product__name">{{ product.name }}</div>
+        <div class="product__price">{{ product.price | currency:'Rp':'symbol':'1.0-0' }}</div>
+
+        <div class="product__action">
+          <button 
+            class="product__action__buy" 
+            (click)="buy(product)"
+            [disabled]="!isAvailable(product)"
+            [ngClass]="{ 
+              'product__action__buy--disabled': !isAvailable(product) 
+            }"
+            >Buy
+          </button>
+        </div>
       </div>
-    </div>
-  } @empty {
-    <div>No products</div>
-  }
+    } @empty {
+      <div>No products</div>
+    }
+  </div>
 </div>

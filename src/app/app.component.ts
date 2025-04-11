@@ -4,7 +4,8 @@ import { ProductRepository } from '../@core/domain/repositories/product/product.
 import { CommonModule } from '@angular/common';
 import { GetProductUseCase } from '../@core/application/usecases/product/get.usecase';
 import { CheckoutUseCase } from '../@core/application/usecases/product/checkout.usecase';
-import { HttpErrorResponse } from '@angular/common/http';
+import { UI_NOTIFICATION_TOKEN } from '../@core/adapter/tokens/ui/notification.token';
+
 
 @Component({
   selector: 'app-root',
@@ -18,25 +19,22 @@ export class AppComponent {
 
   // private readonly productRepository = inject(PRODUCT_REPOSITORY_TOKEN);
   private readonly productRepository = inject(ProductRepository);
+  private readonly notification = inject(UI_NOTIFICATION_TOKEN);
 
   constructor(
     private readonly getProductUseCase: GetProductUseCase,
     private readonly checkoutUseCase: CheckoutUseCase
   ) {
-    this.getProductUseCase.get().subscribe({
+    this.getProductUseCase.execute().subscribe({
       next: (data) => {
+        this.notification.showSuccess('Products loaded successfully');
         this.products = data;
       }
     });
   }
 
   buy(product: Product): void {
-    this.checkoutUseCase.checkout(product).subscribe({
-      next: (res) => {
-        console.log(res);
-      }
-    })
-      
+    this.checkoutUseCase.execute(product);
   }
 
   isAvailable(product: Product): boolean {
