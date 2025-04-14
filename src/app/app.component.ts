@@ -1,10 +1,13 @@
 import { Component, inject } from '@angular/core'
-import { Product } from '../@core/domain/entities/product.entities';
-import { ProductRepository } from '../@core/domain/repositories/product/product.repository';
+import { Product } from '../@core/domain/entities/product.entitiy';
 import { CommonModule } from '@angular/common';
-import { GetProductUseCase } from '../@core/application/usecases/product/get.usecase';
-import { CheckoutUseCase } from '../@core/application/usecases/product/checkout.usecase';
 import { UI_NOTIFICATION_TOKEN } from '../@core/adapter/tokens/ui/notification.token';
+import { GetProductUseCaseFactory } from '../@core/infrastructures/factories/product.factory';
+import { take } from 'rxjs';
+import { ProductDTO } from '../@core/domain/repositories/product.repository';
+import { AddToCartUseCaseFactory } from '../@core/infrastructures/factories/cart.factory';
+import { BaseResponse } from '../@core/shared/interfaces/base-response.interface';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 @Component({
@@ -15,29 +18,47 @@ import { UI_NOTIFICATION_TOKEN } from '../@core/adapter/tokens/ui/notification.t
 })
 export class AppComponent {
   title = 'angular-clean';
-  products: Product[] = [];
+  products: ProductDTO[] = [];
 
   // private readonly productRepository = inject(PRODUCT_REPOSITORY_TOKEN);
-  private readonly productRepository = inject(ProductRepository);
+  // private readonly productRepository = inject(ProductRepository);
   private readonly notification = inject(UI_NOTIFICATION_TOKEN);
 
-  constructor(
-    private readonly getProductUseCase: GetProductUseCase,
-    private readonly checkoutUseCase: CheckoutUseCase
-  ) {
-    this.getProductUseCase.execute().subscribe({
-      next: (data) => {
-        this.notification.showSuccess('Products loaded successfully');
-        this.products = data;
-      }
-    });
+  private readonly getProductUseCase = GetProductUseCaseFactory();
+  private readonly addToCartUseCase = AddToCartUseCaseFactory();
+
+  constructor() {
+    this.getProducts();
   }
 
-  buy(product: Product): void {
-    this.checkoutUseCase.execute(product);
+  getProducts(): void {
+    this.getProductUseCase
+      .execute()
+      .pipe(take(1))
+      .subscribe({
+        next: (data: BaseResponse<ProductDTO[]>) => this.products = data.data ?? [],
+        error: () => {
+          this.notification.showError('Error fetching products');
+        }
+      })
   }
 
-  isAvailable(product: Product): boolean {
-    return this.productRepository.available(product);
+  addToCart(product: ProductDTO): void {  
+    const p = product as unknown as Product; // need better casting
+
+    this.addToCartUseCase.execute(p)
+      .pipe(take(1))
+      .subscribe({
+        next: (resp) => {
+          this.notification.showSuccess(resp.message);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.notification.showError(error.message);
+        }
+      });
   }
+
+  // isAvailable(product: Product): boolean {
+  //   return this.productRepository.available(product);
+  // }
 }

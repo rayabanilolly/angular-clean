@@ -9,13 +9,11 @@
 
         <div class="product__action">
           <button 
-            class="product__action__buy" 
-            (click)="buy(product)"
-            [disabled]="!isAvailable(product)"
-            [ngClass]="{ 
-              'product__action__buy--disabled': !isAvailable(product) 
-            }"
-            >Buy
+            class="product__action__buy"
+            (click)="addToCart(product)"
+            [disabled]="!product.available"
+            [ngClass]="{'product__action__buy--disabled': !product.available}"
+            >Add to Cart
           </button>
         </div>
       </div>

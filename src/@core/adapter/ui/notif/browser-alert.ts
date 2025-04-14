@@ -6,6 +6,6 @@ export class BrowserAlertNotification implements NotificationOutput {
     }
 
     showSuccess(message: string): void {
-        alert(`Success: ${message}`);
+        alert(`${message}`);
     }
 }
